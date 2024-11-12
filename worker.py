@@ -208,7 +208,8 @@ try:
             fileName = 'file-' + str(i)
 
             objectKey = current['objectKey']
-
+            print(f"objectjey :{objectKey}")
+            print(type(objectKey))
             extension = objectKey.split(".")[-1]
 
             print(imageUrl, fileName, extension, objectKey)
