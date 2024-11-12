@@ -147,12 +147,6 @@ try:
         print(selectedModel)
         print("\n\n***********************selected model***************************\n\n")
 
-        # change message visibility
-        messageVisibilityResponse = sqs.change_message_visibility(
-            QueueUrl=sqs_train_queue_url,
-            ReceiptHandle=messageReceiptHandle,
-            VisibilityTimeout=selectedModel["messageTimeout"]
-        )
 
         productId = str(productId)
 
@@ -312,12 +306,7 @@ try:
 
         messageBodyObj = json.loads(messageBody)  # convert json string to dictionary
 
-        # change message visibility
-        messageVisibilityResponse = sqs.change_message_visibility(
-            QueueUrl=sqs_train_queue_url,
-            ReceiptHandle=messageReceiptHandle,
-            VisibilityTimeout=LORA_DELETION_TIMEOUT
-        )
+
 
         lorasToBeDeleted = messageBodyObj['lorasToBeDeleted']
 
