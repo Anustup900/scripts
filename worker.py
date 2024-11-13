@@ -262,7 +262,7 @@ try:
         for sourceFilePath in listFilesRecursively(modelDir):
             # Full path of the file on the local machine
             print("source file path for file in output dir - ", sourceFilePath)
-
+            print(f"source filepath:{type(sourceFilePath)}")
             extension = sourceFilePath.split(".")[-1]
             if (extension.strip() != "safetensors"):
                 continue
