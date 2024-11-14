@@ -36,7 +36,7 @@ MODEL_VERSION_DETAILS = {
             "fused_backward_pass": False,
             "v_parameterization": False,
             "alpha_mask": False,
-            "lr_decay_steps": None
+            "lr_decay_steps": 0.0001
         }
     },
     MODEL_VERSION_FLUX_KOHYA: {
