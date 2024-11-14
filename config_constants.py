@@ -6,7 +6,6 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "v_parameterization": False,
   "pretrained_model_name_or_path": "/mnt/shared_storage/models/unet/flux1-dev.safetensors",
   "tokenizer_cache_dir": None,
-  "train_data_dir": None,
   "cache_info": False,
   "shuffle_caption": False,
   "caption_separator": ",",
@@ -165,4 +164,4 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "cache_text_encoder_outputs_to_disk": True,
   "text_encoder_batch_size": None,
   "disable_mmap_load_safetensors": False,
-  "weighting_scheme": "null"}
+  "weighting_scheme": None}
