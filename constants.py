@@ -30,7 +30,8 @@ MODEL_VERSION_DETAILS = {
         "trainer": SDXLSDScriptsTrainer(),
         "messageTimeout": 7200,     #2 * 60 * 60 (2hrs)
         "training_args": {
-            "skip_cache_check": False
+            "skip_cache_check": False,
+            "bucket_reso_steps": 64
         }
     },
     MODEL_VERSION_FLUX_KOHYA: {
