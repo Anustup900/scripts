@@ -38,7 +38,8 @@ MODEL_VERSION_DETAILS = {
             "alpha_mask": False,
             "lr_decay_steps": 0,
             "lr_scheduler_timescale": 0,
-            "lr_scheduler_min_lr_ratio": 0
+            "lr_scheduler_min_lr_ratio": 0,
+            "fp8_base_unet": False
 
         }
     },
