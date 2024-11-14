@@ -30,6 +30,7 @@ MODEL_VERSION_DETAILS = {
         "trainer": SDXLSDScriptsTrainer(),
         "messageTimeout": 7200,     #2 * 60 * 60 (2hrs)
         "training_args": {
+            "disable_mmap_load_safetensors": True,
             "skip_cache_check": False,
             "bucket_reso_steps": 64
         }
