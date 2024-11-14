@@ -13,12 +13,14 @@ from helper import getSizeInBytes, deleteOldFiles, validateTrainingMessage
 
 from constants import MODEL_VERSION_DETAILS, EVENT_TRAIN, EVENT_DELETE_LORAS
 
+
 def listFilesRecursively(directory):
     filesToReturn = []
     for root, dirs, files in os.walk(directory):
         for file in files:
             filesToReturn.append(os.path.join(root, file))
     return filesToReturn
+
 
 sentry_sdk.init(
     environment=os.environ.get("ENVIRONMENT", "development"),
@@ -48,33 +50,35 @@ s3 = session.client('s3')
 
 currentDir = os.path.dirname(os.path.abspath(__file__))
 
+
 class CustomError(Exception):
     pass
 
-if(not os.path.exists(os.path.join(currentDir, 'dataset'))):
+
+if (not os.path.exists(os.path.join(currentDir, 'dataset'))):
     raise CustomError("DATASET_DIRECTORY_DOES_NOT_EXIST")
 
-trainDataDir=os.path.join(currentDir, 'dataset', 'training')
+trainDataDir = os.path.join(currentDir, 'dataset', 'training')
 os.makedirs(trainDataDir, exist_ok=True)
 
-logDataDir=os.path.join(currentDir, 'dataset', 'logs')
+logDataDir = os.path.join(currentDir, 'dataset', 'logs')
 os.makedirs(logDataDir, exist_ok=True)
 
 # path of the NFS mounted volume - /mnt/shared_nfs   (only for GKE)
 sharedLoraDir = os.path.join(os.path.abspath(os.sep), "mnt", "shared_nfs")
-sharedLoraDirMaxSize = 2000 * 1000 * 1000 * 1000   # approx 2 TB
-LORA_DELETION_TIMEOUT = 5*60      #5mins - used for message visibility timeout
+sharedLoraDirMaxSize = 2000 * 1000 * 1000 * 1000  # approx 2 TB
+LORA_DELETION_TIMEOUT = 5 * 60  # 5mins - used for message visibility timeout
 
 response = sqs.receive_message(
     QueueUrl=sqs_train_queue_url,
     MaxNumberOfMessages=1,
     MessageAttributeNames=['All'],
-    WaitTimeSeconds=20      # Long polling to reduce API calls and improve responsiveness
+    WaitTimeSeconds=20  # Long polling to reduce API calls and improve responsiveness
 )
 
 messages = response.get('Messages', [])
 
-if not messages or len(messages)==0:
+if not messages or len(messages) == 0:
     print("no messages found")
     exit()
 
@@ -94,10 +98,10 @@ try:
 
     print('Received Message:', messageBody, messageAttributes)
 
-    if(messageEvent == EVENT_TRAIN):
+    if (messageEvent == EVENT_TRAIN):
         print("Train request received")
 
-        messageBodyObj = json.loads(messageBody)    #convert json string to dictionary
+        messageBodyObj = json.loads(messageBody)  # convert json string to dictionary
 
         timestamp = str(int(time.time()))
         print("timestamp", timestamp)
@@ -113,22 +117,23 @@ try:
         instancePrompt = messageBodyObj['instancePrompt']
         classPrompt = messageBodyObj['classPrompt']
         trainingImagesRepeatInput = messageBodyObj['trainingImagesRepeatInput']
-        
+
         modelVersion = messageBodyObj['modelVersion']
 
         inputData = messageBodyObj['data']
         _parameters = messageBodyObj['parameters']
 
-        enable_gradient_checkpointing = os.environ.get("ENABLE_GRADIENT_CHECKPOINTING", _parameters.get("gradient_checkpointing", False))
+        enable_gradient_checkpointing = os.environ.get("ENABLE_GRADIENT_CHECKPOINTING",
+                                                       _parameters.get("gradient_checkpointing", False))
 
-        parameters = {      #default parameters
+        parameters = {  # default parameters
             "caption_prefix": None,
             "caption_suffix": None,
             "ip_noise_gamma": None,
             "metadata_title": None,
             "metadata_author": None,
-            "metadata_description": None, 
-            "metadata_license": None, 
+            "metadata_description": None,
+            "metadata_license": None,
             "metadata_tags": None,
             "v_pred_like_loss": None,
             "gradient_checkpointing": enable_gradient_checkpointing in [True, "True"]
@@ -141,7 +146,7 @@ try:
         print(selectedModel)
         print("\n\n***********************selected model***************************\n\n")
 
-        #change message visibility
+        # change message visibility
         messageVisibilityResponse = sqs.change_message_visibility(
             QueueUrl=sqs_train_queue_url,
             ReceiptHandle=messageReceiptHandle,
@@ -150,23 +155,23 @@ try:
 
         productId = str(productId)
 
-        #create a dir to save images and captions
+        # create a dir to save images and captions
         inputDataDir = os.path.join(trainDataDir, timestamp, "input")
         print(inputDataDir)
         os.makedirs(inputDataDir, exist_ok=True)
 
-        #create a dir to save prepared training data
+        # create a dir to save prepared training data
         organizedDataDir = os.path.join(trainDataDir, timestamp, "data")
         print(organizedDataDir)
         os.makedirs(organizedDataDir, exist_ok=True)
 
-        #create a dir to save the model
+        # create a dir to save the model
         modelDir = os.path.join(trainDataDir, timestamp, "model")
         print(modelDir)
         os.makedirs(modelDir, exist_ok=True)
 
-        #create a dir for logs
-        currLogDir = os.path.join(logDataDir, productName+"-"+inputVersion)
+        # create a dir for logs
+        currLogDir = os.path.join(logDataDir, productName + "-" + inputVersion)
         print(currLogDir)
         os.makedirs(currLogDir, exist_ok=True)
 
@@ -176,11 +181,11 @@ try:
             print("current lora disk size", sharedLoraDirCurrSize)
 
             # necessaryFiles = ["index.html", "lost+found"]   #important files and directories in the disk
-        
+
             # if sharedLoraDirCurrSize > sharedLoraDirMaxSize:
             #     deletedLoras = deleteOldFiles(sharedLoraDir, sharedLoraDirCurrSize - sharedLoraDirMaxSize, necessaryFiles)
             #     print("deleted Loras", deletedLoras)
-                
+
             #     if len(deletedLoras) > 0:
             #         messageSentResponse = sqs.send_message(
             #             QueueUrl=sqs_status_queue_url,
@@ -212,12 +217,12 @@ try:
 
             print(imageUrl, fileName, extension, objectKey)
 
-            #create caption file
+            # create caption file
             f = open(os.path.join(inputDataDir, fileName + ".txt"), "w")
             f.write(current['caption'])
             f.close()
 
-            #download images from s3
+            # download images from s3
             s3.download_file(
                 s3_bucket_images,
                 objectKey,
@@ -241,34 +246,37 @@ try:
 
         parameters['train_data_dir'] = os.path.join(organizedDataDir, "img")
         parameters['output_dir'] = modelDir
-        parameters['output_name'] = productName+"-"+inputVersion
+        parameters['output_name'] = productName + "-" + inputVersion
         parameters['logging_dir'] = currLogDir
 
         parameters['pretrained_model_name_or_path'] = selectedModel["name"]
         parameters['wandb_run_name'] = f"{productId}-{inputVersion}"
 
+        if selectedModel["model_name"] == "flux":
+            parameters.update(selectedModel["training_args"])
+        else:
+            pass
         args = Namespace(**parameters)
         print(args)
 
         trainer = selectedModel["trainer"]
         trainer.train(args)
 
-        #check if the model directory is empty
+        # check if the model directory is empty
         file_list = os.listdir(modelDir)
         if len(file_list) == 0:
             raise CustomError("SAFETENSORS_FILE_NOT_CREATED")
 
-        #upload the safetensor files to s3
+        # upload the safetensor files to s3
 
         modelObjectKeys = []
 
-        
         for sourceFilePath in listFilesRecursively(modelDir):
             # Full path of the file on the local machine
             print("source file path for file in output dir - ", sourceFilePath)
 
             extension = sourceFilePath.split(".")[-1]
-            if(extension.strip() != "safetensors"):
+            if (extension.strip() != "safetensors"):
                 continue
 
             fileName = os.path.basename(sourceFilePath)
@@ -283,7 +291,6 @@ try:
             if os.path.exists(sharedLoraDir) and os.path.isdir(sharedLoraDir):
                 print("copying file to shared LoRA directory")
                 shutil.copy(sourceFilePath, sharedLoraDir)
-
 
         # Send the message to the queue with the specified attributes
         messageSentResponse = sqs.send_message(
@@ -303,12 +310,12 @@ try:
 
         print(f"Message sent. Message ID: {messageSentResponse['MessageId']}")
 
-    elif(messageEvent == EVENT_DELETE_LORAS):
+    elif (messageEvent == EVENT_DELETE_LORAS):
         print("Loras deletion request received")
 
-        messageBodyObj = json.loads(messageBody)    #convert json string to dictionary
+        messageBodyObj = json.loads(messageBody)  # convert json string to dictionary
 
-        #change message visibility
+        # change message visibility
         messageVisibilityResponse = sqs.change_message_visibility(
             QueueUrl=sqs_train_queue_url,
             ReceiptHandle=messageReceiptHandle,
@@ -317,7 +324,7 @@ try:
 
         lorasToBeDeleted = messageBodyObj['lorasToBeDeleted']
 
-        if not isinstance(lorasToBeDeleted, list) or len(lorasToBeDeleted)==0:
+        if not isinstance(lorasToBeDeleted, list) or len(lorasToBeDeleted) == 0:
             raise ValueError("LORAS_TO_BE_DELETED_NOT_FOUND")
 
         failedToDelete = []
@@ -375,13 +382,13 @@ except Exception as e:
         sentry_sdk.capture_message(e, "Error")
 
     if messageEvent == EVENT_TRAIN:
-        #send failed reason as a message
+        # send failed reason as a message
         messageSentResponse = sqs.send_message(
             QueueUrl=sqs_status_queue_url,
             MessageBody=str({
                 "trainingJobId": trainingJobId,
                 "status": "failed",
-                "reason": base64.b64encode(str(e).encode('utf-8')).decode('utf-8')        # catch again
+                "reason": base64.b64encode(str(e).encode('utf-8')).decode('utf-8')  # catch again
             }),
             MessageAttributes={
                 'EventName': {
@@ -401,5 +408,5 @@ finally:
 
     deleteDirectory = os.path.join(trainDataDir, timestamp)
     print(deleteDirectory)
-    if timestamp!="" and os.path.isdir(deleteDirectory):
+    if timestamp != "" and os.path.isdir(deleteDirectory):
         shutil.rmtree(deleteDirectory)
