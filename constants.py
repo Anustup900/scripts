@@ -35,7 +35,8 @@ MODEL_VERSION_DETAILS = {
             "bucket_reso_steps": 64,
             "fused_backward_pass": False,
             "v_parameterization": False,
-            "alpha_mask": False
+            "alpha_mask": False,
+            "lr_decay_steps": None
         }
     },
     MODEL_VERSION_FLUX_KOHYA: {
