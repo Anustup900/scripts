@@ -32,7 +32,10 @@ MODEL_VERSION_DETAILS = {
         "training_args": {
             "disable_mmap_load_safetensors": True,
             "skip_cache_check": False,
-            "bucket_reso_steps": 64
+            "bucket_reso_steps": 64,
+            "fused_backward_pass": False,
+            "v_parameterization": False,
+            "alpha_mask": False
         }
     },
     MODEL_VERSION_FLUX_KOHYA: {
