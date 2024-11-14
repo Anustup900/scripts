@@ -29,7 +29,9 @@ MODEL_VERSION_DETAILS = {
         "name": "/mnt/shared_storage/models/checkpoints/sd_xl_base_1.0.safetensors",
         "trainer": SDXLSDScriptsTrainer(),
         "messageTimeout": 7200,     #2 * 60 * 60 (2hrs)
-        "training_args": {}
+        "training_args": {
+            "skip_cache_check": False
+        }
     },
     MODEL_VERSION_FLUX_KOHYA: {
         "model_name": "flux",
