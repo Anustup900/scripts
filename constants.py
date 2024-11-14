@@ -43,12 +43,14 @@ MODEL_VERSION_DETAILS = {
             "initial_epoch": None,
             "skip_until_initial_step": False,
             "initial_step": None,
-            "logging_dir": None,
+            "logging_dir": "/app",
             "log_config": False,
             "cpu_offload_checkpointing": False,
             "sdxl": True,
             "weighting_scheme": False,
             "text_encoder_batch_size": None
+
+
         }
     },
     MODEL_VERSION_FLUX_KOHYA: {
