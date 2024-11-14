@@ -40,7 +40,9 @@ MODEL_VERSION_DETAILS = {
             "lr_scheduler_timescale": 0,
             "lr_scheduler_min_lr_ratio": 0,
             "fp8_base_unet": False,
-            "initial_epoch": None
+            "initial_epoch": None,
+            "skip_until_initial_step": False,
+            "initial_step": None
 
         }
     },
