@@ -251,11 +251,12 @@ try:
 
         parameters['pretrained_model_name_or_path'] = selectedModel["name"]
         parameters['wandb_run_name'] = f"{productId}-{inputVersion}"
-
-        if selectedModel["model_name"] == "flux":
-            parameters.update(selectedModel["training_args"])
-        else:
-            pass
+        print(parameters)
+        # if selectedModel["model_name"] == "flux":
+        parameters.update(selectedModel["training_args"])
+        print(parameters)
+        # else:
+        #     parameters.update()
         args = Namespace(**parameters)
         print(args)
 
