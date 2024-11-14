@@ -3,7 +3,7 @@ from sd_scripts_train import SD15SDScriptsTrainer
 from sd_scripts_train import SDXLSDScriptsTrainer
 from sd_scripts_train import FluxSDScriptsTrainer
 
-from config_constants import CONFIG_FOR_KOHYA_FLUX
+from config_constants import CONFIG_FOR_KOHYA_FLUX, ADDITIONAL_CONFIG_FOR_SDXL
 # event constants
 
 EVENT_TRAIN = "train"
@@ -29,29 +29,7 @@ MODEL_VERSION_DETAILS = {
         "name": "/mnt/shared_storage/models/checkpoints/sd_xl_base_1.0.safetensors",
         "trainer": SDXLSDScriptsTrainer(),
         "messageTimeout": 7200,     #2 * 60 * 60 (2hrs)
-        "training_args": {
-            "disable_mmap_load_safetensors": True,
-            "skip_cache_check": False,
-            "bucket_reso_steps": 64,
-            "fused_backward_pass": False,
-            "v_parameterization": False,
-            "alpha_mask": False,
-            "lr_decay_steps": 0,
-            "lr_scheduler_timescale": 0,
-            "lr_scheduler_min_lr_ratio": 0,
-            "fp8_base_unet": False,
-            "initial_epoch": None,
-            "skip_until_initial_step": False,
-            "initial_step": None,
-            "logging_dir": "/app",
-            "log_config": False,
-            "cpu_offload_checkpointing": False,
-            "sdxl": True,
-            "weighting_scheme": False,
-            "text_encoder_batch_size": None
-
-
-        }
+        "training_args": ADDITIONAL_CONFIG_FOR_SDXL
     },
     MODEL_VERSION_FLUX_KOHYA: {
         "model_name": "flux",
