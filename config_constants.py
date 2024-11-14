@@ -165,3 +165,25 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "text_encoder_batch_size": None,
   "disable_mmap_load_safetensors": False,
   "weighting_scheme": None}
+
+ADDITIONAL_CONFIG_FOR_SDXL = {
+            "disable_mmap_load_safetensors": True,
+            "skip_cache_check": False,
+            "bucket_reso_steps": 64,
+            "fused_backward_pass": False,
+            "v_parameterization": False,
+            "alpha_mask": False,
+            "lr_decay_steps": 0,
+            "lr_scheduler_timescale": 0,
+            "lr_scheduler_min_lr_ratio": 0,
+            "fp8_base_unet": False,
+            "initial_epoch": None,
+            "skip_until_initial_step": False,
+            "initial_step": None,
+            "logging_dir": "/app",
+            "log_config": False,
+            "cpu_offload_checkpointing": False,
+            "sdxl": True,
+            "weighting_scheme": False,
+            "text_encoder_batch_size": None
+        }
