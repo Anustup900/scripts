@@ -164,7 +164,11 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "cache_text_encoder_outputs_to_disk": True,
   "text_encoder_batch_size": None,
   "disable_mmap_load_safetensors": False,
-  "weighting_scheme": None}
+  "weighting_scheme": None,
+  "skip_cache_check": False,
+  "lr_decay_steps": 0,
+  "lr_scheduler_timescale": 0,
+  "lr_scheduler_min_lr_ratio": 0}
 
 ADDITIONAL_CONFIG_FOR_SDXL = {
             "disable_mmap_load_safetensors": True,
