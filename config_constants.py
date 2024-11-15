@@ -105,6 +105,8 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "sample_sampler": "ddim",
   "config_file": None,
   "output_config": False,
+  "output_dir": "",
+  "output_name": "",
   "metadata_title": None,
   "metadata_author": None,
   "metadata_description": None,
