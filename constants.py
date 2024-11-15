@@ -9,7 +9,16 @@ from config_constants import CONFIG_FOR_KOHYA_FLUX, ADDITIONAL_CONFIG_FOR_SDXL
 EVENT_TRAIN = "train"
 EVENT_DELETE_LORAS = "delete-loras"
 
+# model path settings
+
 # model constants
+
+FLUX_CHECKPOINTS = {
+    "clip_l": "/mnt/shared_storage/models/clip/clip_l.safetensors",
+    "t5xxl": "/mnt/shared_storage/models/clip/t5xxl_fp16.safetensors",
+    "ae": "/mnt/shared_storage/models/vae/ae.safetensors"
+}
+
 
 MODEL_VERSION_SDXL = "sdxl"
 MODEL_VERSION_SD_1_5 = "sd1.5"
@@ -36,7 +45,7 @@ MODEL_VERSION_DETAILS = {
         "name": "/mnt/shared_storage/flux/FLUX.1-dev/flux1-dev.safetensors",
         "trainer": FluxSDScriptsTrainer(),
         "messageTimeout": 7200,
-        "training_args": CONFIG_FOR_KOHYA_FLUX
+        "training_args": CONFIG_FOR_KOHYA_FLUX.update(FLUX_CHECKPOINTS)
     },
     MODEL_VERSION_FLUX_TOOLKIT: {
         "model_name": "flux_toolkit",
