@@ -42,7 +42,6 @@ CONFIG_FOR_KOHYA_FLUX =  {
   "in_json": None,
   "dataset_repeats": 40,
   "output_dir": "/app/flux_new_lora",
-  "output_name": "4188_3200_steps_1e4_kohya",
   "huggingface_repo_id": None,
   "huggingface_repo_type": None,
   "huggingface_path_in_repo": None,
