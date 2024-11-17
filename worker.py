@@ -166,7 +166,10 @@ try:
         os.makedirs(organizedDataDir, exist_ok=True)
 
         # create a dir to save the model
-        modelDir = os.path.join(trainDataDir, timestamp, "model")
+        if modelVersion == "flux-kohya":
+            modelDir = "/app/flux_new_lora"
+        else:
+            modelDir = os.path.join(trainDataDir, timestamp, "model")
         print(modelDir)
         os.makedirs(modelDir, exist_ok=True)
 
@@ -246,12 +249,23 @@ try:
 
         parameters['train_data_dir'] = os.path.join(organizedDataDir, "img")
         parameters['output_dir'] = modelDir
-        parameters['output_name'] = productName + "-" + inputVersion
+        if modelVersion == "flux-kohya":
+            additional_json = {
+                "output_name": productName + "-" + inputVersion
+            }
+            parameters.update(additional_json)
+        else:
+            parameters['output_name'] = productName + "-" + inputVersion
         parameters['logging_dir'] = currLogDir
 
         parameters['pretrained_model_name_or_path'] = selectedModel["name"]
         parameters['wandb_run_name'] = f"{productId}-{inputVersion}"
+        print(parameters)
+        # if selectedModel["model_name"] == "flux":
         parameters.update(selectedModel["training_args"])
+        print(parameters)
+        # else:
+        #     parameters.update()
         args = Namespace(**parameters)
         print(args)
 
